@@ -13,12 +13,24 @@
     height: 100vh;
   }
   header {
-    background: #fff;
-    padding: 16px 24px;
-    border-bottom: 1px solid #e5e5e5;
-    font-weight: 600;
-    font-size: 16px;
-  }
+  background: #fff;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e5e5e5;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#new-chat {
+  padding: 8px 16px;
+  font-size: 14px;
+  background: #e5e5e5;
+  color: #111;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
   #chat {
     flex: 1;
     overflow-y: auto;
@@ -76,18 +88,36 @@
 </style>
 </head>
 <body>
-  <header>🦙 My Local AI</header>
+  <header>
+  <span>🦙 My Local AI</span>
+  <span id="msg-count">Messages: 0</span>
+  <button id="new-chat">New Chat</button>
+</header>
   <div id="chat"></div>
   <footer>
-    <input id="input" placeholder="Type your message..." autocomplete="off" />
+<select id="personality">
+  <option value="assistant">Assistant</option>
+  <option value="tutor">Tutor</option>
+  <option value="interviewer">Interviewer</option>
+  <option value="reviewer">Code Reviewer</option>
+</select><input id="input" placeholder="Type your message..." autocomplete="off" />
     <button id="send">Send</button>
   </footer>
 
+
 <script>
+  const personality = document.getElementById("personality"); 
   const chat = document.getElementById("chat");
   const input = document.getElementById("input");
   const send = document.getElementById("send");
+  const newChat = document.getElementById("new-chat");
+  const msgCount = document.getElementById("msg-count");
+  
   let history = [];
+  function updateCount() {
+  msgCount.textContent = "Messages: " + history.length;
+}
+ 
 
   function addMsg(text, cls) {
     const div = document.createElement("div");
@@ -110,7 +140,11 @@
     const res = await fetch("/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text, history: history })
+body: JSON.stringify({
+  message: text,
+  history: history,
+  personality: personality.value
+})
     });
 
     const reader = res.body.getReader();
@@ -129,13 +163,20 @@
     history.push({ role: "assistant", content: fullReply });
     send.disabled = false;
     input.focus();
+    updateCount(); 
   }
 
   send.addEventListener("click", sendMessage);
   input.addEventListener("keydown", e => {
     if (e.key === "Enter") sendMessage();
   });
+  newChat.addEventListener("click", () => {
+  chat.innerHTML = "";
+  history = [];
+  input.value = "";
   input.focus();
+});
+input.focus();
 </script>
 </body>
 </html>

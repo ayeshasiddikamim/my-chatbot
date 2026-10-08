@@ -12,14 +12,21 @@ MODEL = "llama3.2:3b"
 class ChatRequest(BaseModel):
     message: str
     history: list = []
-
+    personality: str = "assistant"
 @app.get("/")
 def home():
     return FileResponse("index.html")
 
 @app.post("/chat")
 def chat(req: ChatRequest):
-    messages = [{"role": "system", "content": "You are a helpful AI assistant."}]
+    personalities = {
+        "assistant": "You are a helpful AI assistant.",
+        "tutor": "You are a patient programming tutor. Explain things step by step with simple examples.",
+        "interviewer": "You are a technical interviewer. Ask the user questions, evaluate their answers, and give constructive feedback.",
+        "reviewer": "You are a senior code reviewer. Analyze code the user shares, point out bugs, suggest improvements, and be specific."
+    }
+    system_prompt = personalities.get(req.personality, personalities["assistant"])
+    messages = [{"role": "system", "content": system_prompt}]
     messages.extend(req.history)
     messages.append({"role": "user", "content": req.message})
 
