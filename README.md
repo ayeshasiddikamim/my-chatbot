@@ -11,7 +11,9 @@ subscriptions, no internet required after the model is downloaded.
 - Full conversation memory (remembers earlier messages in the same session)
 - Streaming responses — the AI replies word-by-word, like modern chat apps
 - Runs 100% locally using [Ollama](https://ollama.com) and the Llama 3.2 model
-
+- **New Chat button** to reset the conversation and start fresh
+- **Personality selector** — choose between Assistant, Tutor, Interviewer, and Code Reviewer
+- **Live message counter** showing how many messages are in the current session
 ## Why I Built It
 
 I'm a 3rd-year software engineering student planning to pursue a Master's
